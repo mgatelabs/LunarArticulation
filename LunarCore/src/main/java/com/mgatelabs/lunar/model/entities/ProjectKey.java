@@ -111,7 +111,7 @@ public class ProjectKey implements Comparable<ProjectKey> {
         this.closed = closed;
     }
 
-    @Column(length = 256, nullable = false)
+    @Column(length = 2048, nullable = false)
     public String getComment() {
         return comment;
     }

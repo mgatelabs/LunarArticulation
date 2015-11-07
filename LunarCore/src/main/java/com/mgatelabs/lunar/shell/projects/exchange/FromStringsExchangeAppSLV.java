@@ -123,7 +123,7 @@ public class FromStringsExchangeAppSLV extends AbstractAppSLV {
                                         if (projectKey != null) {
 
                                             // Does the project key need an update>
-                                            if (isDevelopmentLanguage && projectKey.getComment().equals(item.getComment())) {
+                                            if (isDevelopmentLanguage && !projectKey.getComment().equals(item.getComment())) {
                                                 projectKey.setComment(item.getComment());
                                                 projectKey.setUpdated(c.getTime());
                                                 app.getProjectKeyService().updateProjectKey(projectKey);

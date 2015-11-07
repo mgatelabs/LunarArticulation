@@ -58,7 +58,7 @@ public class ProjectKeyText {
         this.projectKeyNo = projectKeyNo;
     }
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 2048)
     public String getText() {
         return text;
     }

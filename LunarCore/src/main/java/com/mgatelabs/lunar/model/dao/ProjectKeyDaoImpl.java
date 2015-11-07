@@ -3,6 +3,7 @@ package com.mgatelabs.lunar.model.dao;
 import com.mgatelabs.lunar.model.entities.ProjectKey;
 import com.sun.istack.internal.NotNull;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -27,6 +28,8 @@ public class ProjectKeyDaoImpl extends AbstractDao implements ProjectKeyDao {
     public List<ProjectKey> listAllProjectKeys(long projectNo) {
         Criteria criteria = getSession().createCriteria(ProjectKey.class);
         criteria.add(Restrictions.eq("projectNo", projectNo));
+        criteria.addOrder(Order.asc("fileName"));
+        criteria.addOrder(Order.asc("keyText"));
         return criteria.list();
     }
 
@@ -35,6 +38,7 @@ public class ProjectKeyDaoImpl extends AbstractDao implements ProjectKeyDao {
         Criteria criteria = getSession().createCriteria(ProjectKey.class);
         criteria.add(Restrictions.eq("projectNo", projectNo));
         criteria.add(Restrictions.eq("fileName", fileName));
+        criteria.addOrder(Order.asc("keyText"));
         return criteria.list();
     }
 

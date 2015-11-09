@@ -110,9 +110,12 @@ public class ToStringsExchangeAppSLV extends AbstractAppSLV {
                             // Get the development text
                             final String develText = getTextFor(key.getProjectKeyNo(), develLanguage, "UNKNOWN", keyToLangText);
                             final String targetText = getTextFor(key.getProjectKeyNo(), projectLanguage.getLanguageId(), null, keyToLangText);
-                            if (mode == ToStringModes.ALL || (mode == ToStringModes.MISSING && targetText == null)) {
+                            if (mode.isAll() || (!mode.isAll() && targetText == null)) {
                                 sb.append("/* ").append(key.getComment()).append(" */\n");
                                 String text = targetText != null ? targetText : develText;
+                                if (mode == ToStringModes.TEST) {
+                                    text = "$$" + text + "^^";
+                                }
                                 sb.append("\"").append(key.getKeyText().replaceAll("\"", "\\\"")).append("\" = \"").append(text.replaceAll("\"", "\\\"")).append("\";\n\n");
                             }
                             File targetFile = new File(languageFolder + File.separator + entry.getKey());
@@ -143,14 +146,21 @@ public class ToStringsExchangeAppSLV extends AbstractAppSLV {
     }
 
     public enum ToStringModes {
-        MISSING("Dump Missing *.strings", "miss"),
-        ALL("Dump All  *.strings", "all");
+        MISSING("Dump Missing *.strings", "miss", false),
+        ALL("Dump All  *.strings", "all", true),
+        TEST("Test *.strings", "test", true);
         private final String title;
         private final String key;
+        private final boolean all;
 
-        ToStringModes(String title, String key) {
+        ToStringModes(String title, String key, boolean all) {
             this.title = title;
             this.key = key;
+            this.all = all;
+        }
+
+        public boolean isAll() {
+            return all;
         }
 
         public String getTitle() {

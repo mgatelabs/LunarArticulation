@@ -34,6 +34,7 @@ public class ExchangeManagerAppSLV extends AbstractAppSLV {
 
         shells.add(new ToStringsExchangeAppSLV(project, ToStringsExchangeAppSLV.ToStringModes.ALL, getShell(), getApp()));
         shells.add(new ToStringsExchangeAppSLV(project, ToStringsExchangeAppSLV.ToStringModes.MISSING, getShell(), getApp()));
+        shells.add(new ToStringsExchangeAppSLV(project, ToStringsExchangeAppSLV.ToStringModes.TEST, getShell(), getApp()));
 
         shells.add(new ClearExchangeAppSLV(project, getShell(), getApp()));
 

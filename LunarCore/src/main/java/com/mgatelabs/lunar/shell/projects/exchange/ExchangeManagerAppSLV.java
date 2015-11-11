@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class ExchangeManagerAppSLV extends AbstractAppSLV {
 
-    private Project project;
+    private final Project project;
     private final long projectVersionNo;
 
     public ExchangeManagerAppSLV(final Project project, final long projectVersionNo, @NotNull final ShellImpl shell, @NotNull final Application app) {
@@ -28,7 +28,7 @@ public class ExchangeManagerAppSLV extends AbstractAppSLV {
     public void run() {
         super.run();
 
-        List<AbstractSLV> shells = Lists.newArrayList();
+        final List<AbstractSLV> shells = Lists.newArrayList();
 
         shells.add(new FromStringsExchangeAppSLV(project, projectVersionNo, getShell(), getApp()));
 

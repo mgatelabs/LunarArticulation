@@ -11,7 +11,7 @@ import com.sun.istack.internal.NotNull;
 import java.util.List;
 
 /**
- * Created by mmgate on 11/4/15.
+ * Created by Michael Glen Fuller Jr on 11/4/15.
  */
 public class ExchangeManagerAppSLV extends AbstractAppSLV {
 
@@ -32,9 +32,12 @@ public class ExchangeManagerAppSLV extends AbstractAppSLV {
 
         shells.add(new FromStringsExchangeAppSLV(project, projectVersionNo, getShell(), getApp()));
 
-        shells.add(new ToStringsExchangeAppSLV(project, ToStringsExchangeAppSLV.ToStringModes.ALL, getShell(), getApp()));
-        shells.add(new ToStringsExchangeAppSLV(project, ToStringsExchangeAppSLV.ToStringModes.MISSING, getShell(), getApp()));
-        shells.add(new ToStringsExchangeAppSLV(project, ToStringsExchangeAppSLV.ToStringModes.TEST, getShell(), getApp()));
+        shells.add(new ToStringsExchangeAppSLV(project, ToStringsExchangeAppSLV.ToStringModes.ALL, false, getShell(), getApp()));
+        shells.add(new ToStringsExchangeAppSLV(project, ToStringsExchangeAppSLV.ToStringModes.MISSING, false, getShell(), getApp()));
+        //shells.add(new ToStringsExchangeAppSLV(project, ToStringsExchangeAppSLV.ToStringModes.TEST, false, getShell(), getApp()));
+
+        shells.add(new ToStringsExchangeAppSLV(project, ToStringsExchangeAppSLV.ToStringModes.ALL, true, getShell(), getApp()));
+        shells.add(new ToStringsExchangeAppSLV(project, ToStringsExchangeAppSLV.ToStringModes.TEST, true, getShell(), getApp()));
 
         shells.add(new ClearExchangeAppSLV(project, getShell(), getApp()));
 

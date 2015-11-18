@@ -2,10 +2,9 @@ package com.mgatelabs.lunar.shell.projects.source;
 
 import com.google.common.collect.Lists;
 import com.mgatelabs.lunar.Application;
-import com.mgatelabs.lunar.model.entities.Project;
-import com.mgatelabs.lunar.model.entities.ProjectSource;
-import com.mgatelabs.lunar.model.entities.ProjectVersion;
-import com.mgatelabs.lunar.model.entities.ProstaType;
+import com.mgatelabs.lunar.model.entities.*;
+import com.mgatelabs.lunar.shell.projects.deployment.NewProjectDeploymentAppSLV;
+import com.mgatelabs.lunar.shell.projects.deployment.ToggleProjectDeploymentAppSLV;
 import com.mgatelabs.lunar.utils.AbstractAppSLV;
 import com.mgatelabs.lunar.utils.AbstractSLV;
 import com.mgatelabs.lunar.utils.CommitTransaction;
@@ -34,28 +33,40 @@ public class ProjectSourceManagerAppSLV extends AbstractAppSLV {
 
         final List<ProjectSource> sources = Lists.newArrayList();
 
+        final List<ProjectDeployment> deployments = Lists.newArrayList();
+
         while (true) {
             sources.clear();
+            deployments.clear();
             getApp().runReadTransactionSilent(new CommitTransaction() {
                 @Override
                 public boolean commit(@NotNull Application app) throws Exception {
                     sources.addAll(app.getProjectSourceService().listAllProjectSources(project.getProjectNo()));
+                    deployments.addAll(app.getProjectDeploymentService().listAll(project.getProjectNo()));
                     return true;
                 }
             });
 
-            int activeCount = 0;
+            int sourceActiveCount = 0;
             for (ProjectSource projectSource: sources) {
                 if (projectSource.getProsta() == ProstaType.ACTIVE) {
-                    activeCount++;
+                    sourceActiveCount++;
                 }
             }
 
-            info("Found " + activeCount + "/" + sources.size() + " Active Source(s)");
+            int deploymentActiveCount = 0;
+            for (ProjectDeployment projectDeployment: deployments) {
+                if (projectDeployment.getProsta() == ProstaType.ACTIVE) {
+                    deploymentActiveCount++;
+                }
+            }
+
+            info("Found " + sourceActiveCount + "/" + sources.size() + " Active Source(s)");
+            info("Found " + deploymentActiveCount + "/" + deployments.size() + " Active Deployment(s)");
 
             List<AbstractSLV> programs = Lists.newArrayList();
 
-            if (activeCount > 0) {
+            if (sourceActiveCount > 0) {
                 programs.add(new ScanProjectAppSLV(projectVersion, getShell(), getApp()));
             }
 
@@ -64,7 +75,14 @@ public class ProjectSourceManagerAppSLV extends AbstractAppSLV {
                 programs.add(new ToggleProjectSourceAppSLV(sources, getShell(), getApp()));
             }
 
+            if (deployments.size() > 0) {
+
+                programs.add(new ToggleProjectDeploymentAppSLV(deployments, getShell(), getApp()));
+            }
+
             programs.add(new NewProjectSourceAppSLV(project, getShell(), getApp()));
+
+            programs.add(new NewProjectDeploymentAppSLV(project, getShell(), getApp()));
 
             final AbstractSLV s = promptForShell(programs);
             if (s == null) {

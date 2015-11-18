@@ -1,5 +1,6 @@
 package com.mgatelabs.lunar.shell.projects.exchange;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mgatelabs.lunar.Application;
 import com.mgatelabs.lunar.model.entities.*;
@@ -29,25 +30,48 @@ public class ToStringsExchangeAppSLV extends AbstractAppSLV {
     @NotNull
     final ToStringModes mode;
 
+    final boolean deploy;
 
-    public ToStringsExchangeAppSLV(@NotNull final Project project, @NotNull final ToStringModes mode, @NotNull final ShellImpl shell, @NotNull final Application application) {
-        super(mode.getTitle(), mode.getKey(), shell, application);
+
+    public ToStringsExchangeAppSLV(@NotNull final Project project, @NotNull final ToStringModes mode, boolean deploy, @NotNull final ShellImpl shell, @NotNull final Application application) {
+        super((deploy ? "Deploy " : "") + mode.getTitle(), mode.getKey() + (deploy ? "deploy" : ""), shell, application);
         this.project = project;
         this.mode = mode;
+        this.deploy = deploy;
     }
 
     @Override
     public void run() {
         super.run();
+        if (deploy) {
+            final List<ProjectDeployment> deployments = Lists.newArrayList();
+            getApp().runReadTransactionSilent(new CommitTransaction() {
+                @Override
+                public boolean commit(@NotNull Application app) throws Exception {
+                    deployments.addAll(app.getProjectDeploymentService().listActive(project.getProjectNo()));
+                    return true;
+                }
+            });
+            for (ProjectDeployment projectDeployment: deployments) {
+                final File projectPath = new File(projectDeployment.getDeploymentPath());
+                if (projectPath.exists() && projectPath.isDirectory()) {
+                    deployTo(projectDeployment.getDeploymentPath());
+                }
+            }
 
-        final String exchangePath = "." + File.separator + "exchange";
-        final String projectPathStr = exchangePath + File.separator + project.getKey();
-        final File projectPath = new File(projectPathStr);
-        if (!projectPath.exists()) {
-            projectPath.mkdirs();
+        } else {
+            final String exchangePath = "." + File.separator + "exchange";
+            final String projectPathStr = exchangePath + File.separator + project.getKey();
+            final File projectPath = new File(projectPathStr);
+            if (!projectPath.exists()) {
+                projectPath.mkdirs();
+            }
+            deployTo(projectPathStr);
+
         }
+    }
 
-        // Loop through active languages
+    private void deployTo(final String projectPathStr) {
 
         getApp().runReadTransactionSilent(new CommitTransaction() {
             @Override
@@ -96,7 +120,7 @@ public class ToStringsExchangeAppSLV extends AbstractAppSLV {
                     final String languagePath = projectPathStr + File.separator + projectLanguage.getLanguageId() + ".lproj";
                     final File languageFolder = new File(languagePath);
                     if (!languageFolder.exists()) {
-                        if(!languageFolder.mkdirs()) {
+                        if (!languageFolder.mkdirs()) {
                             shellExited("Could not make path:" + languagePath);
                             return false;
                         }

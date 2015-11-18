@@ -4,7 +4,6 @@ import com.google.common.collect.Sets;
 import com.mgatelabs.lunar.model.entities.Language;
 import com.mgatelabs.lunar.model.entities.LanguageType;
 import com.mgatelabs.lunar.model.service.*;
-import com.mgatelabs.lunar.utils.Closer;
 import com.mgatelabs.lunar.utils.CommitTransaction;
 import com.sun.istack.internal.NotNull;
 import org.hibernate.Session;
@@ -93,6 +92,14 @@ public class Application {
     @NotNull
     public ProjectLanguageService getProjectLanguageService() {
         return projectLanguageService;
+    }
+
+    @Autowired
+    @NotNull
+    private ProjectDeploymentService projectDeploymentService;
+
+    public ProjectDeploymentService getProjectDeploymentService() {
+        return projectDeploymentService;
     }
 
     @Autowired

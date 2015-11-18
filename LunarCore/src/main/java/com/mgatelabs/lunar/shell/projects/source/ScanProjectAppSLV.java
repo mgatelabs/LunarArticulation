@@ -183,7 +183,7 @@ public class ScanProjectAppSLV extends AbstractAppSLV {
         new Thread(new Runnable() {
             public void run() {
                 BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
-                String line = null;
+                String line;
                 try {
                     while ((line = input.readLine()) != null)
                         System.out.println(line);

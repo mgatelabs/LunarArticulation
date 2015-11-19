@@ -136,6 +136,8 @@ public class Application {
         knownLanguages.add(new Language("Base", "Base", LanguageType.BASE));
 
         knownLanguages.add(new Language("zh", "Chinese"));
+        knownLanguages.add(new Language("zh-Hans", "Chinese Simplified"));
+        knownLanguages.add(new Language("zh-Hant", "Chinese Traditional"));
         knownLanguages.add(new Language("en", "English"));
         knownLanguages.add(new Language("fr", "French"));
         knownLanguages.add(new Language("de", "German"));

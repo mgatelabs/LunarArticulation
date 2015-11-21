@@ -4,10 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mgatelabs.lunar.Application;
 import com.mgatelabs.lunar.model.entities.*;
-import com.mgatelabs.lunar.utils.AbstractAppSLV;
-import com.mgatelabs.lunar.utils.Closer;
-import com.mgatelabs.lunar.utils.CommitTransaction;
-import com.mgatelabs.lunar.utils.ShellImpl;
+import com.mgatelabs.lunar.utils.*;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 
@@ -136,8 +133,18 @@ public class ToStringsExchangeAppSLV extends AbstractAppSLV {
                             final String targetText = getTextFor(key.getProjectKeyNo(), projectLanguage.getLanguageId(), null, keyToLangText);
                             if (mode.isAll() || (!mode.isAll() && targetText == null)) {
                                 sb.append("/* ").append(key.getComment()).append(" */\n");
-                                String text = targetText != null ? targetText : develText;
-                                if (mode == ToStringModes.TEST) {
+                                String text;
+                                if (deploy) {
+                                    text = targetText != null ? targetText : develText;
+                                } else {
+                                    if (targetText != null) {
+                                        text = targetText;
+                                    } else {
+                                        text = ValueUtils.IGNORE_PREFIX + develText;
+                                    }
+                                }
+                                //String text = targetText != null ? targetText : develText;
+                                if (deploy && mode == ToStringModes.TEST) {
                                     text = "$$" + text + "^^";
                                 }
                                 sb.append("\"").append(key.getKeyText().replaceAll("\"", "\\\"")).append("\" = \"").append(text.replaceAll("\"", "\\\"")).append("\";\n\n");

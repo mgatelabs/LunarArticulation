@@ -30,7 +30,7 @@ public class Language implements Comparator<Language> {
     }
 
     @Id
-    @Column(length = 6, unique = true)
+    @Column(length = 8, unique = true)
     public String getKey() {
         return key;
     }

@@ -7,6 +7,8 @@ import com.sun.istack.internal.NotNull;
  */
 public class ValueUtils {
 
+    public static final String IGNORE_PREFIX = "@!%>";
+
     public static boolean isValidKey(@NotNull final String sample, final int length) {
         if (sample.length() > 1 && sample.length() <= length) {
             return sample.matches("(_a-zA-Z0-9)+]");

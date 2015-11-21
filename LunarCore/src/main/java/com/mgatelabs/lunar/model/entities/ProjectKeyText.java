@@ -40,7 +40,7 @@ public class ProjectKeyText {
         this.projectNo = projectNo;
     }
 
-    @Column(length = 6, nullable = false)
+    @Column(length = 8, nullable = false)
     public String getLanguageId() {
         return languageId;
     }

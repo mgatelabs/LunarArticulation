@@ -1,5 +1,6 @@
 package com.mgatelabs.lunar.shell.projects.exchange;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mgatelabs.lunar.Application;
 import com.mgatelabs.lunar.model.entities.*;
@@ -106,7 +107,17 @@ public class FromStringsExchangeAppSLV extends AbstractAppSLV {
                             String filePath = PathUtils.getPathForExchangeFileName(project, languageId, entry.getKey());
                             File targetFile = new File(filePath);
                             if (targetFile.exists()) {
-                                final List<KeyValueCommentItem> newTextItems = StringsParser.parseFile(targetFile);
+                                final List<KeyValueCommentItem> newTextItems = Lists.newArrayList();
+                                final List<KeyValueCommentItem> sampleTextItems = StringsParser.parseFile(targetFile);
+
+                                // Remove unknown values
+                                for (KeyValueCommentItem sampleItem: sampleTextItems) {
+                                    if (!sampleItem.getText().startsWith(ValueUtils.IGNORE_PREFIX)) {
+                                        newTextItems.add(sampleItem);
+                                    }
+                                }
+                                sampleTextItems.clear();
+
                                 if (newTextItems.size() > 0) {
                                     final Insertion insertion = new Insertion();
                                     insertion.setFilename(entry.getKey());
